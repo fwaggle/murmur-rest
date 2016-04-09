@@ -12,7 +12,7 @@ from flask import request, jsonify, json, Response
 from flask.ext.classy import FlaskView, route
 
 from app import app, meta, auth, auth_enabled
-from app.utils import obj_to_dict, get_server_conf, get_server_port, get_all_users_count, conditional
+from app.utils import obj_to_dict, get_server_conf, get_server_port, get_all_users_count, conditional, cvp_tree
 
 import Murmur
 
@@ -526,9 +526,38 @@ class StatsView(FlaskView):
         # https://github.com/mitsuhiko/flask/issues/170
         return Response(json.dumps(stats, sort_keys=True, indent=4), mimetype='application/json')
 
+class CVPView(FlaskView):
+    """
+    View for display CVP on servers where it is enabled.
+    """
+
+    @route('<int:id>', methods=['GET'])
+    def cvp(self, id):
+        server = meta.getServer(id)
+
+        # Return 404 if not found
+        if server is None:
+            return jsonify(message="Not Found"), 404
+
+        callback = request.args.get('callback')
+
+        # Fetch tree from server
+        tree = server.getTree()
+
+        cvp = cvp_tree(tree)
+
+        # Does the user want a JSONP callback?
+        if callback is None:
+            cvp = json_dumps(cvp, sort_keys=True, indent=4)
+        else:
+            cvp = str("%s(%s);" % (callback, json.dumps(cvp, sort_keys=True, indent=4)))
+
+        return Response(cvp, mimetype='application/json')
+
 # Register views
 ServersView.register(app)
 StatsView.register(app)
+CVPView.register(app)
 
 if __name__ == '__main__':
     app.run(debug=True)
