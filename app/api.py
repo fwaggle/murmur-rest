@@ -548,7 +548,7 @@ class CVPView(FlaskView):
 
         # Does the user want a JSONP callback?
         if callback is None:
-            cvp = json_dumps(cvp, sort_keys=True, indent=4)
+            cvp = json.dumps(cvp, sort_keys=True, indent=4)
         else:
             cvp = str("%s(%s);" % (callback, json.dumps(cvp, sort_keys=True, indent=4)))
 
