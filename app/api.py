@@ -28,27 +28,33 @@ class ServersView(FlaskView):
         Lists all servers
         """
 
+        findserver = request.args.get('find')
+        if findserver is not None:
+            (host, port) = findserver.split(":")
+            port = int(port)
+
         servers = []
         for s in meta.getAllServers():
-            servers.append({
-                'id': s.id(),
-                'name': get_server_conf(meta, s, 'registername'),
-                'address': '%s:%s' % (
-                    get_server_conf(meta, s, 'host'),
-                    get_server_port(meta, s),
-                ),
-                'host': get_server_conf(meta, s, 'host'),
-                'port': get_server_port(meta, s),
-                'running': s.isRunning(),
-                'users': (s.isRunning() and len(s.getUsers())) or 0,
-                'maxusers': get_server_conf(meta, s, 'users') or 0,
-                'channels': (s.isRunning() and len(s.getChannels())) or 0,
-                'uptime_seconds': s.getUptime() if s.isRunning() else 0,
-                'uptime': str(
-                    timedelta(seconds=s.getUptime()) if s.isRunning() else ''
-                ),
-                'log_length': s.getLogLen()
-            })
+            if findserver is None or (get_server_port(meta, s) == port and get_server_conf(meta, s, 'host') == host):
+                servers.append({
+                    'id': s.id(),
+                    'name': get_server_conf(meta, s, 'registername'),
+                    'address': '%s:%s' % (
+                        get_server_conf(meta, s, 'host'),
+                        get_server_port(meta, s),
+                    ),
+                    'host': get_server_conf(meta, s, 'host'),
+                    'port': get_server_port(meta, s),
+                    'running': s.isRunning(),
+                    'users': (s.isRunning() and len(s.getUsers())) or 0,
+                    'maxusers': get_server_conf(meta, s, 'users') or 0,
+                    'channels': (s.isRunning() and len(s.getChannels())) or 0,
+                    'uptime_seconds': s.getUptime() if s.isRunning() else 0,
+                    'uptime': str(
+                        timedelta(seconds=s.getUptime()) if s.isRunning() else ''
+                    ),
+                    'log_length': s.getLogLen()
+                })
 
         # Workaround response due to jsonify() not allowing top-level json response
         # https://github.com/mitsuhiko/flask/issues/170
