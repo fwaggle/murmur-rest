@@ -546,6 +546,7 @@ class CVPView(FlaskView):
         tree = server.getTree()
 
         cvp = cvp_tree(tree)
+        cvp['name'] = get_server_conf(meta, server, 'registername')
 
         # Does the user want a JSONP callback?
         if callback is None:
