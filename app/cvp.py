@@ -29,12 +29,14 @@ def cvp_chan_to_dict(channel):
     """
     return {
         "id": channel.c.id,
+        "parent": channel.c.parent,
         "name": channel.c.name,
         "description": channel.c.description,
         "channels": [ cvp_chan_to_dict(chan) for chan in channel.children ],
         "users": [ cvp_player_to_dict(plr) for plr in channel.users ],
         "position": channel.c.position,
-        "temporary": channel.c.temporary
+        "temporary": channel.c.temporary,
+        "links": channel.c.links
     }
 
 def cvp_tree(tree):
