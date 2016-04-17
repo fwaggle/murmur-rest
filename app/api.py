@@ -12,7 +12,8 @@ from flask import request, jsonify, json, Response
 from flask.ext.classy import FlaskView, route
 
 from app import app, meta, auth, auth_enabled
-from app.utils import obj_to_dict, get_server_conf, get_server_port, get_all_users_count, conditional, cvp_tree
+from app.utils import obj_to_dict, get_server_conf, get_server_port, get_all_users_count, conditional
+from app.cvp import cvp_tree
 
 import Murmur
 
