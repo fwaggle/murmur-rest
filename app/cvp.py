@@ -12,8 +12,15 @@ def cvp_player_to_dict(player):
     """
     return {
         "session": player.session,
-        "id": player.userid,
-        "name": player.name
+        "userid": player.userid,
+        "name": player.name,
+        "deaf": player.deaf,
+        "mute": player.mute,
+        "selfDeaf": player.selfDeaf,
+        "selfMute": player.selfMute,
+        "suppress": player.suppress,
+        "onlinesecs": player.onlinesecs,
+        "idlesecs": player.idlesecs
     }
 
 def cvp_chan_to_dict(channel):
@@ -23,8 +30,11 @@ def cvp_chan_to_dict(channel):
     return {
         "id": channel.c.id,
         "name": channel.c.name,
+        "description": channel.c.description,
         "channels": [ cvp_chan_to_dict(chan) for chan in channel.children ],
-        "users": [ cvp_player_to_dict(plr) for plr in channel.users ]
+        "users": [ cvp_player_to_dict(plr) for plr in channel.users ],
+        "position": channel.c.position,
+        "temporary": channel.c.temporary
     }
 
 def cvp_tree(tree):

@@ -545,8 +545,19 @@ class CVPView(FlaskView):
         # Fetch tree from server
         tree = server.getTree()
 
+        # Get server properties relevant to CVP
+        rname = get_server_conf(meta, server, 'registername')
+        rhost = get_server_conf(meta, server, 'registerhostname')
+        port = get_server_port(meta, server)
+
+        # Build the CVP object
         cvp = cvp_tree(tree)
-        cvp['name'] = get_server_conf(meta, server, 'registername')
+        if rname is not None:
+            cvp['name'] = rname
+        if rhost is not None:
+            cvp['x_connecturl'] = "mumble://%s:%d/?version=1.2.0" % (rhost, port)
+        cvp['x_uptime'] = server.getUptime()
+        cvp['id'] = server.id()
 
         # Does the user want a JSONP callback?
         if callback is None:
