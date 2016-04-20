@@ -541,6 +541,10 @@ class CVPView(FlaskView):
         if server is None:
             return jsonify(message="Not Found"), 404
 
+        allowed = bool(get_server_conf(meta, server, 'x_cvp'))
+        if not allowed:
+            return jsonify(message="CVP Disabled"), 403
+
         # Fetch tree from server
         tree = server.getTree()
 
