@@ -557,7 +557,7 @@ class CVPView(FlaskView):
             "id": server.id()
         }
 
-        if rhost is not None:
+        if rhost != '':
             cvp['x_connecturl'] = "mumble://%s:%d/?version=1.2.0" % (rhost, port)
 
         return Response(json.dumps(cvp, sort_keys=True, indent=4), mimetype='application/json')
