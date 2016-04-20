@@ -32,8 +32,8 @@ def cvp_chan_to_dict(channel):
         "parent": channel.c.parent,
         "name": channel.c.name,
         "description": channel.c.description,
-        "channels": [ cvp_chan_to_dict(chan) for chan in channel.children ],
-        "users": [ cvp_player_to_dict(plr) for plr in channel.users ],
+        "channels": [ cvp_chan_to_dict(c) for c in channel.children ],
+        "users": [ cvp_player_to_dict(p) for p in channel.users ],
         "position": channel.c.position,
         "temporary": channel.c.temporary,
         "links": channel.c.links
