@@ -38,14 +38,3 @@ def cvp_chan_to_dict(channel):
         "temporary": channel.c.temporary,
         "links": channel.c.links
     }
-
-def cvp_tree(tree):
-    """
-    Walk a Tree object returned from a server and convert it to a dict
-    in CVP format.
-    """
-
-    return {
-        "root": cvp_chan_to_dict(tree),
-        "name": 'Root',
-    }

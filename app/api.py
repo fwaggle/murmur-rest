@@ -13,7 +13,7 @@ from flask.ext.classy import FlaskView, route
 
 from app import app, meta, auth, auth_enabled
 from app.utils import obj_to_dict, get_server_conf, get_server_port, get_all_users_count, conditional, support_jsonp
-from app.cvp import cvp_tree
+from app.cvp import cvp_chan_to_dict
 
 import Murmur
 
@@ -552,17 +552,17 @@ class CVPView(FlaskView):
         port = get_server_port(meta, server)
 
         # Build the CVP object
-        cvp = cvp_tree(tree)
-        if rname is not None:
-            cvp['name'] = rname
+        cvp = {
+            "root": cvp_chan_to_dict(tree),
+            "name": rname if rname != '' else 'Root',
+            "x_uptime": server.getUptime(),
+            "id": server.id()
+        }
+
         if rhost is not None:
             cvp['x_connecturl'] = "mumble://%s:%d/?version=1.2.0" % (rhost, port)
-        cvp['x_uptime'] = server.getUptime()
-        cvp['id'] = server.id()
 
-        cvp = json.dumps(cvp, sort_keys=True, indent=4)
-
-        return Response(cvp, mimetype='application/json')
+        return Response(json.dumps(cvp, sort_keys=True, indent=4), mimetype='application/json')
 
 # Register views
 ServersView.register(app)
