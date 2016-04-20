@@ -12,7 +12,7 @@ from flask import request, jsonify, json, Response
 from flask.ext.classy import FlaskView, route
 
 from app import app, meta, auth, auth_enabled
-from app.utils import obj_to_dict, get_server_conf, get_server_port, get_all_users_count, conditional
+from app.utils import obj_to_dict, get_server_conf, get_server_port, get_all_users_count, conditional, support_jsonp
 from app.cvp import cvp_tree
 
 import Murmur
@@ -532,6 +532,7 @@ class CVPView(FlaskView):
     View for display CVP on servers where it is enabled.
     """
 
+    @support_jsonp
     @route('<int:id>', methods=['GET'])
     def cvp(self, id):
         server = meta.getServer(id)
@@ -559,11 +560,7 @@ class CVPView(FlaskView):
         cvp['x_uptime'] = server.getUptime()
         cvp['id'] = server.id()
 
-        # Does the user want a JSONP callback?
-        if callback is None:
-            cvp = json.dumps(cvp, sort_keys=True, indent=4)
-        else:
-            cvp = str("%s(%s);" % (callback, json.dumps(cvp, sort_keys=True, indent=4)))
+        cvp = json.dumps(cvp, sort_keys=True, indent=4)
 
         return Response(cvp, mimetype='application/json')
 
