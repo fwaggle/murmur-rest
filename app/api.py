@@ -541,8 +541,6 @@ class CVPView(FlaskView):
         if server is None:
             return jsonify(message="Not Found"), 404
 
-        callback = request.args.get('callback')
-
         # Fetch tree from server
         tree = server.getTree()
 
